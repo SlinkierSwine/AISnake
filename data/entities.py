@@ -1,25 +1,28 @@
 import pygame as pg
 
-from data.settings import PLAYER_SPEED, PLAYER_COLOR, Dirs, WIDTH, HEIGHT
+from data.settings import PLAYER_SPEED, PLAYER_COLOR_1, Dirs, WIDTH, HEIGHT, PLAYER_COLOR_2
 
 
 class Entity:
-    def __init__(self, x, y, w, h, color):
+    def __init__(self, x, y, w, h, color_1, color_2):
         self.rect = pg.Rect(x, y, w, h)
-        self.color = color
+        self.color_1 = color_1
+        self.color_2 = color_2
 
     def draw(self, screen):
-        pg.draw.rect(screen, color=self.color, rect=self.rect)
+        pg.draw.rect(screen, color=self.color_1, rect=self.rect)
+        pg.draw.rect(screen, color=self.color_2, rect=self.rect, width=3)
 
 
 class Snake:
     def __init__(self, x, y, w, h):
-        self.color = PLAYER_COLOR
-        self.head = Entity(x - w, y, w, h, self.color)
+        self.color_1 = PLAYER_COLOR_1
+        self.color_2 = PLAYER_COLOR_2
+        self.head = Entity(x - w, y, w, h, self.color_1, self.color_2)
         self.body = [
             self.head,
-            Entity(x - 2 * w, y, w, h, self.color),
-            Entity(x - 3 * w, y, w, h, self.color)
+            Entity(x - 2 * w, y, w, h, self.color_1, self.color_2),
+            Entity(x - 3 * w, y, w, h, self.color_1, self.color_2)
         ]
         self.dir = Dirs.RIGHT
         self.speed = PLAYER_SPEED
@@ -30,7 +33,8 @@ class Snake:
             self.head.rect.y,
             self.head.rect.w,
             self.head.rect.h,
-            self.head.color
+            self.head.color_1,
+            self.head.color_2
         )
 
     def collide(self):
