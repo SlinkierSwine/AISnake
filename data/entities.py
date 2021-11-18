@@ -1,6 +1,10 @@
 import pygame as pg
+from collections import namedtuple
+import numpy as np
 
-from data.settings import PLAYER_SPEED, PLAYER_COLOR_1, Dirs, WIDTH, HEIGHT, PLAYER_COLOR_2
+from data.settings import PLAYER_SPEED, PLAYER_COLOR_1, Dirs, WIDTH, HEIGHT, PLAYER_COLOR_2, CELL_SIZE
+
+Point = namedtuple('Point', field_names=['x', 'y'])
 
 
 class Entity:
@@ -22,7 +26,8 @@ class Snake:
         self.body = [
             self.head,
             Entity(x - 2 * w, y, w, h, self.color_1, self.color_2),
-            Entity(x - 3 * w, y, w, h, self.color_1, self.color_2)
+            Entity(x - 3 * w, y, w, h, self.color_1, self.color_2),
+            Entity(x - 4 * w, y, w, h, self.color_1, self.color_2)
         ]
         self.dir = Dirs.RIGHT
         self.speed = PLAYER_SPEED
@@ -37,13 +42,16 @@ class Snake:
             self.head.color_2
         )
 
-    def collide(self):
-        if self.head.rect.x < 0 or self.head.rect.x > WIDTH\
-                or self.head.rect.y < 0 or self.head.rect.y > HEIGHT:
+    def collide_with_point(self, point=None):
+        if point is None:
+            point = Point(self.head.rect.x, self.head.rect.y)
+
+        if point.x < 0 or point.x > WIDTH - CELL_SIZE\
+                or point.y < 0 or point.y > HEIGHT - CELL_SIZE:
             return True
 
         for part in self.body[1:]:
-            if self.head.rect.x == part.rect.x and self.head.rect.y == part.rect.y:
+            if point.x == part.rect.x and point.y == part.rect.y:
                 return True
 
         return False
@@ -68,7 +76,7 @@ class Snake:
 
         self.head = new_head
         self.body.insert(0, self.head)
-        return self.collide()
+        return self.collide_with_point()
 
     def change_direction(self, direction):
         if abs(self.dir) != abs(direction):
@@ -77,6 +85,47 @@ class Snake:
     def draw(self, screen):
         for part in self.body:
             part.draw(screen)
+
+    def get_input_values(self, food):
+        dir_r = self.dir == Dirs.RIGHT
+        dir_l = self.dir == Dirs.LEFT
+        dir_u = self.dir == Dirs.UP
+        dir_d = self.dir == Dirs.DOWN
+
+        point_r = Point(self.head.rect.x - self.head.rect.w, self.head.rect.y)
+        point_l = Point(self.head.rect.x + self.head.rect.w, self.head.rect.y)
+        point_u = Point(self.head.rect.x, self.head.rect.y - self.head.rect.h)
+        point_d = Point(self.head.rect.x, self.head.rect.y + self.head.rect.h)
+
+        values = [
+            (dir_r and self.collide_with_point(point_r)) or
+            (dir_l and self.collide_with_point(point_l)) or
+            (dir_u and self.collide_with_point(point_u)) or
+            (dir_d and self.collide_with_point(point_d)),
+
+            # Danger right
+            (dir_u and self.collide_with_point(point_r)) or
+            (dir_d and self.collide_with_point(point_l)) or
+            (dir_l and self.collide_with_point(point_u)) or
+            (dir_r and self.collide_with_point(point_d)),
+
+            # Danger left
+            (dir_d and self.collide_with_point(point_r)) or
+            (dir_u and self.collide_with_point(point_l)) or
+            (dir_r and self.collide_with_point(point_u)) or
+            (dir_l and self.collide_with_point(point_d)),
+
+            dir_l,
+            dir_r,
+            dir_u,
+            dir_d,
+
+            food.rect.x < self.head.rect.x,  # food left
+            food.rect.x > self.head.rect.x,  # food right
+            food.rect.y < self.head.rect.y,  # food up
+            food.rect.y > self.head.rect.y  # food down
+        ]
+        return np.array(values, dtype=int)
 
 
 class Food(Entity):
