@@ -9,6 +9,7 @@ if __name__ == '__main__':
     pygame.init()
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, 'config-feedforward.txt')
+    winner_path = os.path.join(local_dir, 'winner.pickle')
     game = AIGame()
-    game.run_nn(config_path)
+    game.run_winner(config_path, winner_path)
     sys.exit()

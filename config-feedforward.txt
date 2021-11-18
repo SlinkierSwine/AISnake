@@ -1,19 +1,19 @@
 [NEAT]
 fitness_criterion           = max
-fitness_threshold         = 100
+fitness_threshold         = 300
 pop_size                          = 100
-reset_on_extinction     = False
+reset_on_extinction     = True
 
 [DefaultGenome]
 # node activation options
 activation_default            = tanh
-activation_mutate_rate  = 0.0
-activation_options           = tanh
+activation_mutate_rate  = 0.05
+activation_options           = relu tanh
 
 # node aggregation options
 aggregation_default           = sum
-aggregation_mutate_rate = 0.0
-aggregation_options          = sum
+aggregation_mutate_rate = 0.05
+aggregation_options          = sum product min max mean median maxabs
 
 # node bias options
 bias_init_mean        = 0.0

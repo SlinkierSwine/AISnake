@@ -28,7 +28,6 @@ class Game:
         self.score = 0
 
         pg.display.set_caption(GAME_NAME)
-        pg.key.set_repeat(1, 25)
 
     def display_score(self):
         score_font = pg.font.SysFont(SCORE_FONT, SCORE_FONT_SIZE)

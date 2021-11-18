@@ -42,16 +42,13 @@ class Snake:
             self.head.color_2
         )
 
-    def collide_with_point(self, point=None):
-        if point is None:
-            point = Point(self.head.rect.x, self.head.rect.y)
-
-        if point.x < 0 or point.x > WIDTH - CELL_SIZE\
-                or point.y < 0 or point.y > HEIGHT - CELL_SIZE:
+    def collide(self):
+        if self.head.rect.x < 0 or self.head.rect.x > WIDTH - CELL_SIZE\
+                or self.head.rect.y < 0 or self.head.rect.y > HEIGHT - CELL_SIZE:
             return True
 
         for part in self.body[1:]:
-            if point.x == part.rect.x and point.y == part.rect.y:
+            if self.head.rect.x == part.rect.x and self.head.rect.y == part.rect.y:
                 return True
 
         return False
@@ -76,7 +73,7 @@ class Snake:
 
         self.head = new_head
         self.body.insert(0, self.head)
-        return self.collide_with_point()
+        return self.collide()
 
     def change_direction(self, direction):
         if abs(self.dir) != abs(direction):
@@ -85,6 +82,27 @@ class Snake:
     def draw(self, screen):
         for part in self.body:
             part.draw(screen)
+
+
+class Food(Entity):
+    pass
+
+
+class AISnake(Snake):
+    def __init__(self, x, y, w, h):
+        super().__init__(x, y, w, h)
+        self.moves_left = 100
+
+    def collide_with_point(self, point):
+        if point.x < 0 or point.x > WIDTH - CELL_SIZE\
+                or point.y < 0 or point.y > HEIGHT - CELL_SIZE:
+            return True
+
+        for part in self.body[1:]:
+            if point.x == part.rect.x and point.y == part.rect.y:
+                return True
+
+        return False
 
     def get_input_values(self, food):
         dir_r = self.dir == Dirs.RIGHT
@@ -127,6 +145,23 @@ class Snake:
         ]
         return np.array(values, dtype=int)
 
+    def change_direction_by_output(self, output):
+        if output[0] > 0.8 and output[1] < output[0]:
+            if self.dir == Dirs.RIGHT:
+                self.change_direction(Dirs.UP)
+            elif self.dir == Dirs.UP:
+                self.change_direction(Dirs.LEFT)
+            elif self.dir == Dirs.LEFT:
+                self.change_direction(Dirs.DOWN)
+            elif self.dir == Dirs.DOWN:
+                self.change_direction(Dirs.RIGHT)
 
-class Food(Entity):
-    pass
+        elif output[2] > 0.8 and output[1] < output[2]:
+            if self.dir == Dirs.RIGHT:
+                self.change_direction(Dirs.DOWN)
+            elif self.dir == Dirs.DOWN:
+                self.change_direction(Dirs.LEFT)
+            elif self.dir == Dirs.LEFT:
+                self.change_direction(Dirs.UP)
+            elif self.dir == Dirs.UP:
+                self.change_direction(Dirs.RIGHT)
