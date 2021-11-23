@@ -110,8 +110,8 @@ class AISnake(Snake):
         dir_u = self.dir == Dirs.UP
         dir_d = self.dir == Dirs.DOWN
 
-        point_r = Point(self.head.rect.x - self.head.rect.w, self.head.rect.y)
-        point_l = Point(self.head.rect.x + self.head.rect.w, self.head.rect.y)
+        point_r = Point(self.head.rect.x + self.head.rect.w, self.head.rect.y)
+        point_l = Point(self.head.rect.x - self.head.rect.w, self.head.rect.y)
         point_u = Point(self.head.rect.x, self.head.rect.y - self.head.rect.h)
         point_d = Point(self.head.rect.x, self.head.rect.y + self.head.rect.h)
 
