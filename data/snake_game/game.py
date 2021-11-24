@@ -3,8 +3,8 @@ from random import randrange
 import pygame as pg
 from pygame import Color
 
-from data.entities import Snake, Food
-from .settings import *
+from data.snake_game.entities import Snake, Food
+from data.settings import *
 
 
 class Game:
@@ -18,33 +18,36 @@ class Game:
 
         self.running = False
         self.clock = pg.time.Clock()
-        self.fps = 10
+        self.fps = FPS
         self.player = Snake(
             *PLAYER_START_POS,
             *PLAYER_SIZE,
         )
-        food_pos = (randrange(0, WIDTH, FOOD_SIZE[0]), randrange(0, HEIGHT, FOOD_SIZE[0]))
-        self.food = Food(*food_pos, *FOOD_SIZE, FOOD_COLOR_1, FOOD_COLOR_2)
-        self.score = 0
+
+        self._spawn_food()
 
         pg.display.set_caption(GAME_NAME)
 
-    def display_score(self):
+    def _display_score(self, score):
         score_font = pg.font.SysFont(SCORE_FONT, SCORE_FONT_SIZE)
-        score_surface = score_font.render('Score : ' + str(self.score), True, self.score_color)
+        score_surface = score_font.render('Score : ' + str(score), True, self.score_color)
         score_rect = score_surface.get_rect()
-        score_rect.midtop = (WIDTH / 10, 15)
+        score_rect.midtop = (WIDTH / 8, 15)
         self.screen.blit(score_surface, score_rect)
 
-    def update(self):
+    def _update(self):
         self.screen.fill(self.background)
         self.food.draw(self.screen)
         self.player.draw(self.screen)
 
-        self.display_score()
+        self._display_score(self.player.score)
 
         pg.display.update()
         self.clock.tick(self.fps)
+
+    def _spawn_food(self):
+        food_pos = (randrange(0, WIDTH, FOOD_SIZE[0]), randrange(0, HEIGHT, FOOD_SIZE[0]))
+        self.food = Food(*food_pos, *FOOD_SIZE)
 
     def run(self):
         self.running = True
@@ -77,9 +80,7 @@ class Game:
                     break
 
                 if self.player.eat(self.food):
-                    food_pos = (randrange(0, WIDTH, FOOD_SIZE[0]), randrange(0, HEIGHT, FOOD_SIZE[0]))
-                    self.food = Food(*food_pos, *FOOD_SIZE, FOOD_COLOR_1, FOOD_COLOR_2)
-                    self.score += 1
+                    self._spawn_food()
 
-                self.update()
+                self._update()
 

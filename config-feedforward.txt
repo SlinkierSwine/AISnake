@@ -3,10 +3,11 @@ fitness_criterion           = max
 fitness_threshold         = 300
 pop_size                          = 100
 reset_on_extinction     = True
+no_fitness_termination = True
 
 [DefaultGenome]
 # node activation options
-activation_default            = tanh
+activation_default            = relu
 activation_mutate_rate  = 0.05
 activation_options           = relu tanh
 

@@ -1,7 +1,7 @@
 import pygame
 import sys
 
-from data.game import Game
+from data.snake_game.game import Game
 
 if __name__ == '__main__':
     pygame.init()

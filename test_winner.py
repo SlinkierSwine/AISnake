@@ -3,7 +3,7 @@ import os
 import pygame
 import sys
 
-from data.ai_game import AIGame
+from data.snake_ai.ai_game import AIGame
 
 if __name__ == '__main__':
     pygame.init()
