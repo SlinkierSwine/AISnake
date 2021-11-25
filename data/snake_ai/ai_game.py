@@ -95,7 +95,7 @@ class AIGame(Game):
                         self._delete_snake(snake)
                         continue
 
-                    self._change_fitness(x, +0.1)
+                    self._change_fitness(x, 0.1)
 
                     output = self.nets[self.snakes.index(snake)].activate((snake.get_input_values(self.food)))
                     snake.change_direction_by_output(output)
@@ -125,7 +125,7 @@ class AIGame(Game):
         stats = neat.StatisticsReporter()
         p.add_reporter(stats)
 
-        winner = p.run(self.eval_genomes, 50)
+        winner = p.run(self.eval_genomes, GENERATIONS)
         import pickle
         pickle.dump(winner, open("winner.pickle", "wb"))
 
@@ -140,5 +140,6 @@ class AIGame(Game):
                                     config_file)
         self.is_winner = True
         self.eval_genomes(((0, winner), ), config)
+        return self.highest_score
 
 

@@ -25,6 +25,9 @@ FOOD_COLOR_1 = 0, 250, 0
 FOOD_COLOR_2 = 0, 150, 0
 FOOD_SIZE = CELL_SIZE, CELL_SIZE
 
+# N-n
+GENERATIONS = 50
+
 
 class Dirs:
     # Directions

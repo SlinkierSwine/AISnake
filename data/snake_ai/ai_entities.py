@@ -1,7 +1,6 @@
 from collections import namedtuple
 
 import numpy as np
-import pygame as pg
 
 from data.snake_game.entities import Snake
 from data.settings import *
@@ -90,13 +89,3 @@ class AISnake(Snake):
                 self.change_direction(Dirs.UP)
             elif self.dir == Dirs.UP:
                 self.change_direction(Dirs.RIGHT)
-
-    def draw(self, screen):
-        super().draw(screen)
-        score_font = pg.font.SysFont(SCORE_FONT, SCORE_FONT_SIZE_SMALL)
-        score_color = pg.Color(SCORE_SMALL_COLOR)
-        score_surface = score_font.render(str(self.score), True, score_color)
-        score_rect = score_surface.get_rect()
-        score_rect.x = self.head.rect.centerx
-        score_rect.y = self.head.rect.y
-        screen.blit(score_surface, score_rect)

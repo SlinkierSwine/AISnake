@@ -11,5 +11,7 @@ if __name__ == '__main__':
     config_path = os.path.join(local_dir, 'config-feedforward.txt')
     winner_path = os.path.join(local_dir, 'winner.pickle')
     game = AIGame()
-    game.run_winner(config_path, winner_path)
+    highest_score = game.run_winner(config_path, winner_path)
+    print()
+    print('Highest score:', highest_score)
     sys.exit()
