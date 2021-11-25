@@ -8,8 +8,8 @@ no_fitness_termination = True
 [DefaultGenome]
 # node activation options
 activation_default            = relu
-activation_mutate_rate  = 0.05
-activation_options           = relu tanh
+activation_mutate_rate  = 0.1
+activation_options           = relu tanh abs exp gauss
 
 # node aggregation options
 aggregation_default           = sum

@@ -28,11 +28,12 @@ class Game:
 
         pg.display.set_caption(GAME_NAME)
 
-    def _display_score(self, score):
+    def _display_score(self, score, text='Score: '):
         score_font = pg.font.SysFont(SCORE_FONT, SCORE_FONT_SIZE)
-        score_surface = score_font.render('Score : ' + str(score), True, self.score_color)
+        score_surface = score_font.render(text + str(score), True, self.score_color)
         score_rect = score_surface.get_rect()
-        score_rect.midtop = (WIDTH / 8, 15)
+        score_rect.x = WIDTH - score_rect.w - 10
+        score_rect.y = 15
         self.screen.blit(score_surface, score_rect)
 
     def _update(self):

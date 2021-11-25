@@ -15,6 +15,7 @@ class AIGame(Game):
         self.player = None
         self.is_winner = False
         self.fps = FPS
+        self.highest_score = 0
 
         self.nets = []
         self.snakes = []
@@ -25,6 +26,8 @@ class AIGame(Game):
         self.food.draw(self.screen)
         for snake in self.snakes:
             snake.draw(self.screen)
+
+        self._display_score(self.highest_score, text='Highest score: ')
 
         if self.is_winner:
             if self.snakes:
@@ -47,10 +50,14 @@ class AIGame(Game):
         if not self.is_winner:
             self.ge[index].fitness += value
 
-    def _delete_genome(self, snake):
-        self.nets.pop(self.snakes.index(snake))
-        self.ge.pop(self.snakes.index(snake))
-        self.snakes.pop(self.snakes.index(snake))
+    def _delete_snake(self, snake):
+        index = self.snakes.index(snake)
+        if self.highest_score < snake.score:
+            self.highest_score = snake.score
+            self._change_fitness(index, self.highest_score)
+        self.nets.pop(index)
+        self.ge.pop(index)
+        self.snakes.pop(index)
 
     def eval_genomes(self, genomes, config):
         self.running = True
@@ -71,7 +78,7 @@ class AIGame(Game):
                     if event.key == pg.K_ESCAPE and not self.is_winner:
                         for snake in self.snakes:
                             self._change_fitness(self.snakes.index(snake), -5 * snake.length)
-                            self._delete_genome(snake)
+                            self._delete_snake(snake)
 
             else:
 
@@ -83,7 +90,7 @@ class AIGame(Game):
 
                     if not snake.moves_left:
                         self._change_fitness(self.snakes.index(snake), -4 * snake.length)
-                        self._delete_genome(snake)
+                        self._delete_snake(snake)
                         continue
 
                     self._change_fitness(x, +0.1)
@@ -93,11 +100,11 @@ class AIGame(Game):
 
                     if snake.move_and_collide():
                         self._change_fitness(self.snakes.index(snake), -2.5 * snake.length)
-                        self._delete_genome(snake)
+                        self._delete_snake(snake)
 
                     elif snake.eat(self.food):
                         self._spawn_food()
-                        self._change_fitness(self.snakes.index(snake), 30)
+                        self._change_fitness(self.snakes.index(snake), 20)
                         snake.moves_left += 100
                     else:
                         self._change_fitness(x, -0.01)
