@@ -9,8 +9,11 @@ from data.settings import *
 
 
 class AIGame(Game):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, no_window=False):
+        if not no_window:
+            super().__init__()
+        else:
+            self._spawn_food()
 
         self.player = None
         self.is_winner = False
@@ -27,11 +30,11 @@ class AIGame(Game):
         for snake in self.snakes:
             snake.draw(self.screen)
 
-        self._display_score(self.highest_score, text='Highest score: ')
-
         if self.is_winner:
             if self.snakes:
                 self._display_score(self.snakes[0].score)
+        else:
+            self._display_score(self.highest_score, text='Highest score: ')
 
         pg.display.update()
         self.clock.tick(self.fps)
@@ -43,8 +46,7 @@ class AIGame(Game):
         self.snakes.append(AISnake(
             *PLAYER_START_POS,
             *PLAYER_SIZE))
-        if not self.is_winner:
-            self.ge.append(genome)
+        self.ge.append(genome)
 
     def _change_fitness(self, index, value):
         if not self.is_winner:
