@@ -1,10 +1,18 @@
+import os
+
+from data.config import read_config
+
+
+config = read_config(os.path.join('data', 'config.cfg'))
+
+
 # Game
-CELL_SIZE = 30
-HEIGHT = 20 * CELL_SIZE
-WIDTH = 20 * CELL_SIZE
+CELL_SIZE = int(config['GAME']['CELL_SIZE'])
+HEIGHT = int(config['GAME']['HEIGHT']) * CELL_SIZE
+WIDTH = int(config['GAME']['WIDTH']) * CELL_SIZE
 SIZE = WIDTH, HEIGHT
 GAME_NAME = 'AISnake'
-FPS = 120
+FPS = int(config['GAME']['FPS'])
 
 BACKGROUND_COLOR = 0, 0, 0
 SCORE_COLOR = 250, 250, 250
@@ -26,7 +34,7 @@ FOOD_COLOR_2 = 0, 150, 0
 FOOD_SIZE = CELL_SIZE, CELL_SIZE
 
 # N-n
-GENERATIONS = 50
+GENERATIONS = int(config['NN']['GENERATIONS'])
 
 
 class Dirs:
