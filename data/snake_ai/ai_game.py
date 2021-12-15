@@ -1,8 +1,10 @@
+import os
 import pickle
 
 import neat
 import pygame as pg
 
+import visualize
 from data.snake_ai.ai_entities import AISnake
 from data.snake_game.game import Game
 from data.settings import *
@@ -130,6 +132,37 @@ class AIGame(Game):
         pickle.dump(winner, open("winner.pickle", "wb"))
 
         print('\nBest genome:\n{!s}'.format(winner))
+
+        from pathlib import Path
+        Path("stats").mkdir(parents=True, exist_ok=True)
+
+        visualize.plot_stats(stats, ylog=True, view=True, filename=os.path.join('stats', "feedforward-fitness.svg"))
+        visualize.plot_species(stats, view=True, filename=os.path.join('stats', "feedforward-speciation.svg"))
+
+        node_names = {
+            2: 'Right',
+            1: 'Left',
+            0: 'Forward',
+            -1: 'Danger forward',
+            -2: 'Danger right',
+            -3: 'Danger left',
+            -4: 'Dir left',
+            -5: 'Dir right',
+            -6: 'Dir up',
+            -7: 'Dir down',
+            -8: 'Food left',
+            -9: 'Food right',
+            -10: 'Food up',
+            -11: 'Food down',
+        }
+        visualize.draw_net(config, winner, True, node_names=node_names)
+
+        visualize.draw_net(config, winner, view=True, node_names=node_names,
+                           filename=os.path.join('stats', "winner-feedforward.gv"))
+        visualize.draw_net(config, winner, view=True, node_names=node_names,
+                           filename=os.path.join('stats', "winner-feedforward-enabled.gv"), show_disabled=False)
+        visualize.draw_net(config, winner, view=True, node_names=node_names,
+                           filename=os.path.join('stats', "winner-feedforward-enabled-pruned.gv"), show_disabled=False, prune_unused=True)
 
     def run_winner(self, config_file, winner_path):
         with open(winner_path, 'rb') as f:
