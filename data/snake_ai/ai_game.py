@@ -81,7 +81,7 @@ class AIGame(Game):
                 elif event.type == pg.KEYDOWN:
                     if event.key == pg.K_ESCAPE and not self.is_winner:
                         for snake in self.snakes:
-                            self._change_fitness(self.snakes.index(snake), -5 * snake.length)
+                            self._change_fitness(self.snakes.index(snake), -5)
                             self._delete_snake(snake)
 
             else:
@@ -93,7 +93,7 @@ class AIGame(Game):
                 for x, snake in enumerate(self.snakes):
 
                     if not snake.moves_left:
-                        self._change_fitness(self.snakes.index(snake), -4 * snake.length)
+                        self._change_fitness(self.snakes.index(snake), -4)
                         self._delete_snake(snake)
                         continue
 
@@ -103,12 +103,12 @@ class AIGame(Game):
                     snake.change_direction_by_output(output)
 
                     if snake.move_and_collide():
-                        self._change_fitness(self.snakes.index(snake), -2.5 * snake.length)
+                        self._change_fitness(self.snakes.index(snake), -4)
                         self._delete_snake(snake)
 
                     elif snake.eat(self.food):
                         self._spawn_food()
-                        self._change_fitness(self.snakes.index(snake), 20)
+                        self._change_fitness(self.snakes.index(snake), 3)
                         snake.moves_left += 100
                     else:
                         self._change_fitness(x, -0.01)
